@@ -4,6 +4,8 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
+use Illuminate\Auth\AuthenticationException;
+use Symfony\Component\HttpFoundation\Response;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -16,5 +18,10 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->append(EnsureFrontendRequestsAreStateful::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        $exceptions->render(function (AuthenticationException $e, $request) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'You are not logged in. Please log in to continue.'
+            ], Response::HTTP_UNAUTHORIZED);
+        });
     })->create();

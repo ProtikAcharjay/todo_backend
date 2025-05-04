@@ -54,7 +54,6 @@ class TodoController extends Controller
             $data = $request->validate([
                 'title' => 'required|string|max:255',
                 'description' => 'nullable|string',
-                'is_completed' => 'boolean',
             ]);
 
             $data['user_id'] = auth()->id();
